@@ -8,12 +8,6 @@ const app = new App({
   token: TOKEN
 });
 
-app.event("team_join", ({ event, say }) => {
-  say(
-    `<@${event.user}>さん、はじめまして。こちらのbotから登録をお願い致します。`
-  );
-});
-
 const gbbsCommand = ({ ack, body, say, payload, context }) => {
   ack();
   switch (body.text) {
