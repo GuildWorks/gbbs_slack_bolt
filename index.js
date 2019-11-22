@@ -47,7 +47,7 @@ const modalSwitch = ({ payload, context, say }) => {
 
 const openModal = ({ payload, context }, view) => {
   try {
-    const result = app.client.views.open({
+    app.client.views.open({
       token: context.botToken,
       trigger_id: payload.trigger_id,
       view: view
@@ -105,7 +105,8 @@ const modalSubmit = ({ body, view, context }) => {
       app.client.chat.postMessage({
         channel: body.user.id,
         token: context.botToken,
-        text: "稼働を登録しました。"
+        text:
+          "稼働予定を登録しました。\n 登録した情報は /gbbs list で確認できます。"
       })
     )
     .catch(err => console.log(err));
