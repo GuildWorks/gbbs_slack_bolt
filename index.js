@@ -33,7 +33,7 @@ const gbbsCommand = ({ ack, body, say, payload, context }) => {
   }
 };
 
-const modalSwitch = (kind, { payload, context, say }) => {
+const modalSwitch = ({ payload, context, say }) => {
   const id = payload.user_id;
   const kindApi = `${API}/user?slack_id=${id}`;
   axios.get(kindApi).then(res => {
@@ -66,8 +66,7 @@ const openModal = ({ payload, context }, view) => {
 const unregisteredMessage = `登録が未完了です。登録を完了してください。 ${RAILS_SERVER}`;
 
 const input = ({ payload, context, say }) => {
-  const userApi = `${API}/user`;
-  modalSwitch(payload.user_id, { payload, context, say });
+  modalSwitch({ payload, context, say });
 };
 
 const list = ({ payload, say }) => {
@@ -77,9 +76,7 @@ const list = ({ payload, say }) => {
     const { schedules } = res.data.data;
     const message = () => {
       if (schedules[0] && schedules[1]) {
-        return `来月の稼働予定は *${schedules[0]}* , 再来月の稼働予定は *${
-          schedules[1]
-        }* です。`;
+        return `来月の稼働予定は *${schedules[0]}* , 再来月の稼働予定は *${schedules[1]}* です。`;
       } else if (schedules[0]) {
         return `来月の稼働予定は *${schedules[0]}* です。`;
       } else {
@@ -96,7 +93,7 @@ const help = ({ say }) => {
 
 app.command("/gbbs", gbbsCommand);
 
-const modalSubmit = ({ body, view, say }) => {
+const modalSubmit = ({ body, view, context }) => {
   const { id } = body.user;
   const { input_1, input_2 } = view.state.values;
   const value1 = Number(input_1.select.selected_option.value);
@@ -108,13 +105,21 @@ const modalSubmit = ({ body, view, say }) => {
     }
   };
   const scheduleApi = `${API}/schedule_information?slack_id=${id}`;
-  axios.patch(scheduleApi, postData).catch(err => console.log(err));
-  //say(`来月の稼働を${values[0]}、再来月の稼働を${values[1]}で登録しました。`);
+  axios
+    .patch(scheduleApi, postData)
+    .then(
+      app.client.chat.postMessage({
+        channel: body.user.id,
+        token: context.botToken,
+        text: "稼働を登録しました。"
+      })
+    )
+    .catch(err => console.log(err));
 };
 
-app.view("view_modal", ({ ack, body, view, say }) => {
+app.view("view_modal", ({ ack, body, view, context }) => {
   ack();
-  modalSubmit({ body, view, say });
+  modalSubmit({ body, view, context });
 });
 
 // Start your app
