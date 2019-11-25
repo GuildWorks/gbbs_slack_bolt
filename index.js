@@ -27,24 +27,6 @@ const gbbsCommand = ({ ack, body, say, payload, context }) => {
   }
 };
 
-const modalSwitch = ({ payload, context, say }) => {
-  const id = payload.user_id;
-  const kindApi = `${API}/user?slack_id=${id}`;
-  axios.get(kindApi).then(res => {
-    const { kind } = res.data.data;
-    if (kind) {
-      const optionApi = `${API}/schedule_information/options?slack_id=${id}`;
-      axios.get(optionApi).then(res => {
-        const { options } = res.data.data;
-        const view = modal(options);
-        openModal({ payload, context }, view);
-      });
-    } else {
-      say(unregisteredMessage);
-    }
-  });
-};
-
 const openModal = ({ payload, context }, view) => {
   try {
     app.client.views.open({
@@ -60,7 +42,21 @@ const openModal = ({ payload, context }, view) => {
 const unregisteredMessage = `登録が未完了です。登録を完了してください。 ${RAILS_SERVER}`;
 
 const input = ({ payload, context, say }) => {
-  modalSwitch({ payload, context, say });
+  const id = payload.user_id;
+  const kindApi = `${API}/user?slack_id=${id}`;
+  axios.get(kindApi).then(res => {
+    const { kind } = res.data.data;
+    if (kind) {
+      const optionApi = `${API}/schedule_information/options?slack_id=${id}`;
+      axios.get(optionApi).then(res => {
+        const { options } = res.data.data;
+        const view = modal(options);
+        openModal({ payload, context }, view);
+      });
+    } else {
+      say(unregisteredMessage);
+    }
+  });
 };
 
 const list = ({ payload, say }) => {
