@@ -2,6 +2,9 @@
   "name": "@slack/slack-bolt-sdk-example",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": "10.x"
+  },
   "description": "A basic example of using the Slack Bolt ⚡️ SDK",
   "main": "index.js",
   "scripts": {

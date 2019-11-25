@@ -1,7 +1,13 @@
 const { App } = require("@slack/bolt");
 const axios = require("axios");
 const { modal } = require("./modal");
-const { RAILS_SERVER, API, SIGNING_SECRET, TOKEN } = require("./constrants");
+const {
+  RAILS_SERVER,
+  API,
+  SIGNING_SECRET,
+  TOKEN,
+  PROJECT_DOMAIN
+} = require("./constrants");
 
 const app = new App({
   signingSecret: SIGNING_SECRET,
@@ -114,7 +120,12 @@ app.view("view_modal", ({ ack, body, view, context }) => {
 });
 
 // Start your app
-(async () => {
+async () => {
   await app.start(process.env.PORT || 3000);
   console.log("⚡️ Bolt app is running!");
-})();
+  setInterval(() => {
+    axios
+      .get(`http://${PROJECT_DOMAIN}.glitch.me/`)
+      .catch(err => console.log("wake"));
+  }, 280000);
+};
