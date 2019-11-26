@@ -120,7 +120,7 @@ app.view("view_modal", ({ ack, body, view, context }) => {
 });
 
 // Start your app
-async () => {
+(async () => {
   await app.start(process.env.PORT || 3000);
   console.log("⚡️ Bolt app is running!");
   setInterval(() => {
@@ -128,4 +128,4 @@ async () => {
       .get(`http://${PROJECT_DOMAIN}.glitch.me/`)
       .catch(err => console.log("wake"));
   }, 280000);
-};
+})();
