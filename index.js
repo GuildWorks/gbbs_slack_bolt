@@ -1,17 +1,17 @@
 const { App } = require("@slack/bolt");
 const axios = require("axios");
 const { modal } = require("./modal");
-const {
-  RAILS_SERVER,
-  API,
-  SIGNING_SECRET,
-  TOKEN,
-  PROJECT_DOMAIN
-} = require("./constrants");
+const { expressReceiver } = require("./expressReceiver");
+const { RAILS_SERVER, API, TOKEN } = require("./constrants");
 
 const app = new App({
-  signingSecret: SIGNING_SECRET,
-  token: TOKEN
+  token: TOKEN,
+  receiver: expressReceiver
+});
+
+expressReceiver.app.get("/", (_req, res) => {
+  console.log("waking");
+  res.sendStatus(200);
 });
 
 const gbbsCommand = ({ ack, body, say, payload, context }) => {
@@ -123,9 +123,4 @@ app.view("view_modal", ({ ack, body, view, context }) => {
 (async () => {
   await app.start(process.env.PORT || 3000);
   console.log("⚡️ Bolt app is running!");
-  setInterval(() => {
-    axios
-      .get(`http://${PROJECT_DOMAIN}.glitch.me/`)
-      .catch(err => console.log("wake"));
-  }, 280000);
 })();
