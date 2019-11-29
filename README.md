@@ -1,6 +1,6 @@
 # gbbs-slack-bolt
 
-Glitch https://glitch.com/~prairie-impatiens
+Glitch https://glitch.com/~gbbs-slack-bolt-production
 [Slack's Bolt Framework](https://slack.dev/bolt/tutorial/getting-started)
 
 ## 機能
